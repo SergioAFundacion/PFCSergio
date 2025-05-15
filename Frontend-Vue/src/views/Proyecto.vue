@@ -5,6 +5,11 @@
             <button class="botonMenu" @click="ejecutarCardsSeleccionadas">Ejecutar</button>
 
             <input type="text" v-model="busqueda" placeholder="Buscar archivo..." class="buscador" />
+
+            <button v-if="cardsSeleccionadas.length > 0" @click="confirmarEliminarMultipleCards" class="botonMenu">
+                Eliminar seleccionados
+            </button>
+
         </div>
 
         <!-- Contenedor principal (tarjetas y área de carga de archivos) -->
@@ -159,6 +164,11 @@ export default {
             const cardsAEliminar = this.cardsSeleccionadas;
             if (cardsAEliminar.length === 0) {
                 this.close();
+                return;
+            }
+
+            const confirmado = window.confirm(`¿Estás seguro de que deseas eliminar ${cardsAEliminar.length} archivo(s)?`);
+            if (!confirmado) {
                 return;
             }
 

@@ -59,7 +59,7 @@ public class ProyectoServiceImpl implements IProyectoService {
     }
 
     @Override
-    public void guardarArchivo(MultipartFile archivo) {
+    public void guardarArchivos(MultipartFile archivo) {
         if (archivo == null || archivo.isEmpty()) {
             throw new IllegalArgumentException("El archivo está vacío o es nulo.");
         }

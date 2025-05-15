@@ -10,7 +10,7 @@ public interface IProyectoService {
 
     void deletePruebas(List<String> pruebas);
 
-    void guardarArchivo(MultipartFile archivo);
+    void guardarArchivos(MultipartFile archivo);
 
     void ejecutarPruebas(List<String> archivos);
 
