@@ -46,9 +46,11 @@ public class ProyectoController {
     @PostMapping("/upload-file")
     public ResponseEntity<String> uploadFiles(@RequestParam("files") List<MultipartFile> files) {
         try {
+            System.out.println("Número de archivos recibidos: " + files.size());
             // Guardar los archivos
             for (MultipartFile file : files) {
-                service.guardarArchivo(file);
+                System.out.println("Archivo recibido: " + file.getOriginalFilename());
+                service.guardarArchivos(file);
             }
             return ResponseEntity.ok("Archivos subidos correctamente.");
         } catch (Exception e) {
