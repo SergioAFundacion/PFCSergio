@@ -6,7 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -146,6 +151,46 @@ public class ProyectoServiceImpl implements IProyectoService {
             e.printStackTrace();
             throw new RuntimeException("Error en la ejecución del script PowerShell. Detalles: " + e.getMessage(), e);
         }
+    }
+
+    private static final String DIRECTORIO_ARCHIVOS = "C:/Users/sergi/Desktop/JSONS";
+
+    @Override
+    public String leerContenidoArchivo(String nombreArchivo) throws IOException {
+        Path path = Paths.get(DIRECTORIO_ARCHIVOS, nombreArchivo);
+
+        // Verificación de existencia del archivo
+        if (!Files.exists(path)) {
+            throw new FileNotFoundException("Archivo no encontrado: " + nombreArchivo);
+        }
+
+        // Verifica si se puede leer el archivo
+        if (!Files.isReadable(path)) {
+            throw new IOException("No se puede leer el archivo, permisos insuficientes: " + path);
+        }
+
+        // Imprime la ruta para verificar si es correcta
+        System.out.println("Leyendo archivo: " + path.toString());
+
+        // Leer el contenido del archivo
+        String contenido = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+
+        // Verifica que el contenido se lee correctamente
+        System.out.println("Contenido del archivo: " + contenido);
+
+        return contenido;
+    }
+
+    @Override
+    public void guardarContenidoArchivo(String nombreArchivo, String contenido) throws IOException {
+        Path path = Paths.get(DIRECTORIO_ARCHIVOS, nombreArchivo);
+        if (!Files.exists(path)) {
+            throw new FileNotFoundException("Archivo no encontrado: " + nombreArchivo);
+        }
+
+        // Escribir el nuevo contenido en el archivo
+        Files.write(path, contenido.getBytes(StandardCharsets.UTF_8));
+        System.out.println("Contenido del archivo " + nombreArchivo + " actualizado.");
     }
 
 }

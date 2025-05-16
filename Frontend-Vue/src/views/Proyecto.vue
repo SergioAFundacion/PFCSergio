@@ -21,6 +21,8 @@
                     <!-- Botones -->
                     <button class="card-check" @click="toggleCard(card)">{{ card.active ? '✔' : '' }}</button>
                     <button class="card-eliminar" @click="eliminarCard(index)">✖</button>
+                    <button class="card-editar" @click="abrirEditor(card)">✎</button>
+
                     <!-- Imagen fija -->
                     <div class="card-icono">
                         <img :src="icono_prueba" alt="icono" style="width: 100%; max-height: 100px;" />
@@ -53,6 +55,18 @@
                 </div>
             </div>
         </div>
+
+        <!--Modal para editar archivos-->
+        <div v-if="editorAbierto" class="modal" @click="cerrarEditor" :aria-hidden="!editorAbierto">
+            <div class="modal-contenido" @click.stop>
+                <h3>Editando: {{ cardEditando.nombre }}</h3>
+                <textarea v-model="cardEditando.contenido" class="editor-textarea"></textarea>
+                <div class="modal-botones">
+                    <button class="botonMenu" @click="guardarCambios">Guardar</button>
+                    <button class="botonMenu" @click="cerrarEditor">Cancelar</button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -73,6 +87,10 @@ export default {
             cardsSeleccionadas: [],
             filtros: [],
             filtrosActivos: [],
+            editorAbierto: false,
+            cardEditando: null,
+            showModal: false,
+            modalContent: '',
             fileId: null,
             busqueda: '',
         }
@@ -323,6 +341,53 @@ export default {
             this.filePreview = [];
             this.$refs.fileInput.value = null;
         },
+
+        abrirEditor(card) {
+            if (card && card.nombre) {
+                this.cardEditando = { ...card };
+                this.editorAbierto = true;
+                this.obtenerContenidoArchivo(card.nombre);
+            } else {
+                console.error('El card no contiene nombreArchivo');
+            }
+        },
+
+        obtenerContenidoArchivo(nombreArchivo) {
+            axiosInstance.get('/get-contenido', { params: { nombreArchivo } })
+                .then(response => {
+                    if (this.cardEditando) {
+                        this.cardEditando.contenido = response.data.contenido;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al obtener el contenido del archivo:", error);
+                    this.sendMessageAlert?.({
+                        nombre: this.$t('error'),
+                        typeData: 'error',
+                        descripcionData: 'No se pudo obtener el contenido del archivo.'
+                    });
+                });
+        },
+
+        cerrarEditor() {
+            this.editorAbierto = false;
+            this.cardEditando = null;
+        },
+
+        guardarCambios() {
+            if (this.cardEditando && this.cardEditando.contenido) {
+                axiosInstance.post('/guardar-contenido', {
+                    nombreArchivo: this.cardEditando.nombre,
+                    contenido: this.cardEditando.contenido
+                })
+                    .then(() => {
+                        this.cerrarEditor();
+                    })
+                    .catch(error => {
+                        console.error('Error al guardar el contenido:', error);
+                    });
+            }
+        }
     }
 }
 </script>
@@ -534,5 +599,50 @@ export default {
     border: 1px solid #ccc;
     border-radius: 6px;
     width: 200px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 800px;
+}
+
+.editor-textarea {
+    width: 100%;
+    height: 400px;
+}
+
+.modal-botones {
+    margin-top: 10px;
+    text-align: right;
+}
+
+.card-editar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    background-color: #1168a6;
+    color: white;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 4px;
 }
 </style>
