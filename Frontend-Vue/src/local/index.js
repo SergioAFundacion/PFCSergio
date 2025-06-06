@@ -12,7 +12,7 @@ const i18n = createI18n({
   locale: window.navigator.language.split('-')[0], // Idioma del navegador
   fallbackLocale: 'es', // Idioma por defecto
   messages: {
-    es: es, // No necesitas el prefijo lang
+    es: es, 
     en: en
   }
 })
