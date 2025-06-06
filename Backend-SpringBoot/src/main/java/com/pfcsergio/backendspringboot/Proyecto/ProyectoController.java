@@ -125,14 +125,18 @@ public class ProyectoController {
 
     @PostMapping("/guardar-contenido")
     public ResponseEntity<Map<String, String>> guardarContenidoArchivo(@RequestBody Map<String, String> request) {
+        System.out.println("Recibiendo solicitud en /guardar-contenido: " + request);
         String nombreArchivo = request.get("nombreArchivo");
         String contenido = request.get("contenido");
+        System.out.println("Nombre archivo: " + nombreArchivo);
+        System.out.println("Contenido recibido: " + contenido);
         try {
             service.guardarContenidoArchivo(nombreArchivo, contenido);
             Map<String, String> response = new HashMap<>();
             response.put("mensaje", "Contenido guardado correctamente");
             return ResponseEntity.ok(response);
         } catch (IOException e) {
+            System.out.println("Error al guardar el archivo: " + e.getMessage());
             Map<String, String> error = new HashMap<>();
             error.put("error", "No se pudo guardar el archivo: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);

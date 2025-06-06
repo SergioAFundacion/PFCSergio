@@ -1,12 +1,10 @@
 <template>
   <div class="pop-up" v-if="show">
     <div class="pop-up-inner">
-      <div class="pop-up-close" @click="close">
-        <!--<img src="@/assets/SVG/botonera/ico_close_blue.svg" alt="Close" />-->
-      </div>
+
       <h1 class="pop-up-h1">{{ $t('lang.proyecto.tituloAñadir') }}</h1>
 
-      <!-- Input for folder name (only at root level) -->
+      <!-- Input para el nombre de la carpeta (solo en root) -->
       <h2 v-if="nivelActual === 'root'">{{ $t('lang.proyecto.nombreCarpeta') }}</h2>
       <input
         v-if="nivelActual === 'root'"
@@ -16,7 +14,7 @@
         class="input-nombre-carpeta"
       />
 
-      <!-- Drag & drop + file selector -->
+      <!-- Drag & drop + selector de archivos -->
       <div
         class="drag-area"
         @click="abrirSelectorArchivos"
@@ -35,36 +33,34 @@
         />
       </div>
 
-      <!-- List of selected files -->
-      <div v-if="archivoSeleccionado.length" class="file-list-container">
+      <!-- Lista de archivos seleccionados -->
+      <div v-if="archivoSeleccionado.length" class="contenedorArchivosSeleccionados">
         <h3>{{ $t('lang.proyecto.archivosSeleccionados') }}</h3>
-        <ul class="file-list">
-          <li v-for="(file, index) in archivoSeleccionado" :key="index" class="file-item">
-            <span class="file-name">{{ file.name }}</span>
-            <button @click="removeFile(index)" class="remove-file-btn">✖</button>
+        <ul class="listaArchivos">
+          <li v-for="(file, index) in archivoSeleccionado" :key="index" class="filaArchivo">
+            <span class="nombreArchivo">{{ file.name }}</span>
+            <button @click="removeFile(index)" class="botonQuitarArchivo">✖</button>
           </li>
         </ul>
       </div>
 
-      <!-- Message if no files selected -->
+      <!-- Mensaje si no se selecciona ningún archivo -->
       <p v-else style="color: red;">
         {{ $t('lang.proyecto.seleccionarAlMenosUnArchivo') }}
       </p>
 
-      <!-- Buttons -->
+      <!-- Botones -->
       <div class="buttons-container" style="text-align: right; margin-top: 20px;">
         <button @click="close" class="buttonMenuSecund">
           {{ $t('lang.proyecto.cancelar') }}
-          <!--<img src="@/assets/SVG/botonera/ico_close_blue.svg" style="height: 13px; margin-left: 10px" />-->
         </button>
 
         <button
           :disabled="(nivelActual === 'root' && !nombreCarpeta) || archivoSeleccionado.length === 0"
           @click="confirmarSubida"
-          class="buttonMenuPrimary"
+          class="botonMenuPrimario"
         >
           {{ $t('lang.proyecto.aceptar') }}
-          <!--<img src="@/assets/SVG/botonera/ico_upload.svg" style="height: 13px; margin-left: 10px; filter: invert(1);" />-->
         </button>
       </div>
     </div>
@@ -236,7 +232,7 @@ export default {
   }
 }
 
-.buttonMenuPrimary {
+.botonMenuPrimario {
   padding: 8px 16px;
   font-size: 12px;
   border-radius: 4px;
@@ -289,17 +285,17 @@ export default {
   display: none;
 }
 
-.file-list-container {
+.contenedorArchivosSeleccionados {
   margin-top: 10px;
 }
 
-.file-list {
+.listaArchivos {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.file-item {
+.filaArchivo {
   display: flex;
   align-items: center;
   justify-content-between: space-between;
@@ -307,7 +303,7 @@ export default {
   border-bottom: 1px #000;
 }
 
-.file-name {
+.nombreArchivo {
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -315,7 +311,7 @@ export default {
   margin-right: 10px;
 }
 
-.remove-file-btn {
+.botonQuitarArchivo {
   background-color: transparent;
   border: red;
   color: #ff0000;

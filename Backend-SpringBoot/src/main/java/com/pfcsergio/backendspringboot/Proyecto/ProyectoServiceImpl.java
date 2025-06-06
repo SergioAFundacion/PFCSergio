@@ -141,10 +141,11 @@ public class ProyectoServiceImpl implements IProyectoService {
     @Override
     public void guardarContenidoArchivo(String nombreArchivo, String contenido) throws IOException {
         Path path = Paths.get(DIRECTORIO_BASE, nombreArchivo);
-        if (!Files.exists(path)) {
-            throw new FileNotFoundException("Archivo no encontrado: " + nombreArchivo);
-        }
 
+        if (!Files.exists(path)) {
+            System.out.println("Archivo no encontrado, intentando crear: " + nombreArchivo);
+            Files.createDirectories(path.getParent()); // Crea directorios si no existen
+        }
         Files.write(path, contenido.getBytes(StandardCharsets.UTF_8));
         System.out.println("Contenido del archivo " + nombreArchivo + " actualizado.");
     }

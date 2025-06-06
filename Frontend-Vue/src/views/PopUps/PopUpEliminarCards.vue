@@ -1,19 +1,20 @@
 <template>
-  <div class="pop-up" v-if="show">
-    <div class="pop-up-inner" v-click-outside="close">
-      <div class="pop-up-close" @click="close">
-        <!--<img src="@/assets/SVG/botonera/ico_close_blue.svg" alt="Cerrar" />-->
-      </div>
+    <!-- Contenedor principal del modal de eliminación -->
+    <div class="pop-up" v-if="show">
+    <!-- Contenedor interno del modal, cierra al hacer clic fuera -->
+    <div class="pop-up-inner">
+      <!-- Título del modal -->
       <h1 class="pop-up-h1">{{ $t('lang.proyecto.tituloEliminar') }}</h1>
-
+      <!-- Sección para mostrar los elementos a eliminar o mensaje de error -->
       <div class="contInput" style="margin-bottom: 12px; text-align: left;">
+        <!-- Lista de elementos seleccionados para eliminar -->
         <template v-if="items.length > 0">
           <p>
             {{ nivelActual === 'root' ?
                $t('lang.proyecto.confirmarEliminacionCarpetas', { count: items.length }) :
                $t('lang.proyecto.confirmarEliminacionArchivos', { count: items.length }) }}
           </p>
-          <ul class="file-list">
+          <ul class="listaArchivos">
             <li v-for="(item, index) in items" :key="index">
               {{ item.title }}
             </li>
@@ -26,18 +27,17 @@
         </template>
       </div>
 
+      <!-- Botones de acción (cancelar y eliminar) -->
       <div style="display: flex; gap: 18px; justify-content: flex-end">
-        <button @click="close" class="buttonMenuSecund">
+        <button @click="close" class="botonMenuSecundario">
           {{ $t('lang.proyecto.cancelar') }}
-          <!--<img src="@/assets/SVG/botonera/ico_close_blue.svg" style="height: 13px; margin-left: 10px" />-->
         </button>
         <button
           v-if="items.length > 0"
           @click="confirmDelete"
-          class="buttonMenuDestructive"
+          class="botonMenuEliminar"
         >
           {{ $t('lang.proyecto.eliminar') }}
-          <!--<img src="@/assets/SVG/botonera/ico_trash_white.svg" style="height: 13px; margin-left: 10px" />-->
         </button>
       </div>
     </div>
@@ -127,7 +127,7 @@ p {
   }
 }
 
-.buttonMenuDestructive {
+.botonMenuEliminar {
   padding: 8px 16px;
   background: #a73535;
   color: #fff;
@@ -147,7 +147,7 @@ p {
   }
 }
 
-.buttonMenuSecund {
+.botonMenuSecundario {
   padding: 8px 16px;
   background: none;
   color: #1168a6;
@@ -163,7 +163,7 @@ p {
   }
 }
 
-.file-list {
+.listaArchivos {
   list-style: none;
   padding: 0;
   margin: 10px 0 0 0;
@@ -171,7 +171,7 @@ p {
   overflow-y: auto;
 }
 
-.file-list li {
+.listaArchivos li {
   padding: 5px 0;
   border-bottom: 1px solid #e0e0e0;
 }
